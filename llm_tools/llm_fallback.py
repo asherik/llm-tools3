@@ -22,22 +22,21 @@ from llm_tools.llm_streaming import StreamingOpenAIChatModel
 from llm_tools.llm_streaming_base import StreamingLLMBase
 
 
-
 class StreamingModelWithFallback(StreamingLLMBase):
     def __init__(
-        self,
-        models: List[StreamingOpenAIChatModel],
-        should_fallback_to_other_model: Callable[[Exception], bool] = \
-            should_fallback_to_other_model, 
+            self,
+            models: List[StreamingOpenAIChatModel],
+            should_fallback_to_other_model: Callable[[Exception], bool] = \
+                    should_fallback_to_other_model,
     ):
         self.models = models
         self.should_fallback_to_other_model = should_fallback_to_other_model
         self.exceptions = []
-    
+
     async def stream_llm_reply(
-        self,
-        messages: List[OpenAIChatMessage],
-        stop: Optional[List[str]] = None,
+            self,
+            messages: List[OpenAIChatMessage],
+            stop: Optional[List[str]] = None,
     ) -> AsyncIterator[Tuple[str, str]]:
         self.exceptions = []
         for model in self.models:
@@ -63,13 +62,13 @@ class StreamingModelWithFallback(StreamingLLMBase):
         return any(model.succeeded for model in self.models)
 
     def get_tokens_spent(
-        self,
-        only_successful_trial: bool = False,
+            self,
+            only_successful_trial: bool = False,
     ) -> TokenExpenses:
-        
+
         if not self.succeeded and only_successful_trial:
             raise ValueError("Cannot get tokens spent for unsuccessful trial")
-            
+
         if only_successful_trial:
             first_successful_model = next(model for model in self.models if model._succeeded)
             return first_successful_model.get_tokens_spent(only_successful_trial)

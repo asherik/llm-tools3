@@ -3,7 +3,6 @@ from typing import List, Dict
 import logging
 import tiktoken
 
-
 from llm_tools.chat_message import (
     OpenAIChatMessage,
     prepare_messages,
@@ -37,6 +36,8 @@ class TokenExpense:
             "gpt-3.5-turbo": 2,
             "gpt-4": 30,
             "gpt-4-1106-preview": 10,
+            "gpt-4o": 5,
+            "gpt-4o-mini": 1,  # TODO не корректно, надо переводить на double (0.3)
         }[self.model_name]
 
     def price_per_1e6_output_tokens(self) -> int:
@@ -44,12 +45,14 @@ class TokenExpense:
             "gpt-3.5-turbo": 2,
             "gpt-4": 60,
             "gpt-4-1106-preview": 30,
+            "gpt-4o": 15,
+            "gpt-4o-mini": 2,  # TODO не корректно, надо переводить на double (1.2)
         }[self.model_name]
 
     def get_price_multiplied_by_1e6(self) -> int:
         return (
-            self.price_per_1e6_input_tokens() * self.n_input_tokens
-            + self.price_per_1e6_output_tokens() * self.n_output_tokens
+                self.price_per_1e6_input_tokens() * self.n_input_tokens
+                + self.price_per_1e6_output_tokens() * self.n_output_tokens
         )
 
     def get_price(self) -> float:
@@ -85,8 +88,8 @@ class TokenExpenses:
 
 
 def count_tokens_from_input_messages(
-    messages: List[OpenAIChatMessage],
-    model_name: str,
+        messages: List[OpenAIChatMessage],
+        model_name: str,
 ) -> int:
     if not messages:
         return 0
@@ -99,8 +102,8 @@ def count_tokens_from_input_messages(
 
 
 def count_tokens_from_output_text(
-    text: str,
-    model_name: str,
+        text: str,
+        model_name: str,
 ) -> int:
     if not text:
         return 0
@@ -124,7 +127,7 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
         "gpt-4-0613",
         "gpt-4-32k-0613",
         "gpt-4-1106-preview",
-        }:
+    }:
         tokens_per_message = 3
         tokens_per_name = 1
     elif model == "gpt-3.5-turbo-0301":
