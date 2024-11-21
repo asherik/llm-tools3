@@ -156,7 +156,9 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
                 for item in value:
                     # Check for the 'image_url' type within each dictionary in the list
                     if isinstance(item, dict) and item.get("type") == "image_url":
-                        num_tokens += 85 #openai берет такую цену при low качестве за каждую картинку
+                        # num_tokens += 85 #openai берет такую цену при low качестве за каждую картинку
+                        #пропускаем, так как подсчитывается в приложении
+                        pass
                     else:
                         # Encode the value if it's not an image
                         num_tokens += len(encoding.encode(str(item)))
