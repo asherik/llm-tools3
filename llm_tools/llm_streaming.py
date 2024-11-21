@@ -104,11 +104,13 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
 
         self.reset()
 
+        # Добавляем проверку и преобразование полей сообщений в строки
         for msg in messages:
             if hasattr(msg, 'content') and not isinstance(msg.content, str):
                 msg.content = str(msg.content) if msg.content is not None else ""
             if hasattr(msg, 'role') and not isinstance(msg.role, str):
                 msg.role = str(msg.role) if msg.role is not None else ""
+            # Если есть другие поля, которые нужно проверить, добавьте их здесь
 
         _f = partial(count_tokens_from_input_messages,
                      messages=messages,
