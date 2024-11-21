@@ -151,8 +151,22 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
     for message in messages:
         num_tokens += tokens_per_message
         for key, value in message.items():
-            num_tokens += len(encoding.encode(value))
+            # Check if the value is a list
+            if isinstance(value, list):
+                for item in value:
+                    # Check for the 'image_url' type within each dictionary in the list
+                    if isinstance(item, dict) and item.get("type") == "image_url":
+                        num_tokens += 300 #openai берет такую цену при low качестве за каждую картинку, тут немного с запасом
+                    else:
+                        # Encode the value if it's not an image
+                        num_tokens += len(encoding.encode(str(item)))
+            else:
+                # Handle non-list values
+                num_tokens += len(encoding.encode(value))
+
             if key == "name":
                 num_tokens += tokens_per_name
+
     num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
     return num_tokens
+
