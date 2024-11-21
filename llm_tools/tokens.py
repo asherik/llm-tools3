@@ -132,16 +132,16 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
         tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
         tokens_per_name = -1  # if there's a name, the role is omitted
     elif "gpt-3.5-turbo" in model:
-        logger.debug("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
+        logger.debug("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo.")
         return num_tokens_from_messages(messages, model="gpt-3.5-turbo")
     elif "gpt-4" in model:
-        logger.debug("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
+        logger.debug("Warning: gpt-4 may update over time. Returning num tokens assuming pt-4.")
         return num_tokens_from_messages(messages, model="gpt-4")
     elif "gpt-4o" in model:
-        logger.debug("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
+        logger.debug("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4o.")
         return num_tokens_from_messages(messages, model="gpt-4o")
     elif "gpt-4o-mini" in model:
-        logger.debug("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
+        logger.debug("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4o-mini.")
         return num_tokens_from_messages(messages, model="gpt-4o-mini")
     else:
         raise NotImplementedError(
