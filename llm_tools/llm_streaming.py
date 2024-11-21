@@ -103,15 +103,6 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
         assert len(messages) > 0
 
         self.reset()
-
-        # Добавляем проверку и преобразование полей сообщений в строки
-        for msg in messages:
-            if hasattr(msg, 'content') and not isinstance(msg.content, str):
-                msg.content = str(msg.content) if msg.content is not None else ""
-            if hasattr(msg, 'role') and not isinstance(msg.role, str):
-                msg.role = str(msg.role) if msg.role is not None else ""
-            # Если есть другие поля, которые нужно проверить, добавьте их здесь
-
         _f = partial(count_tokens_from_input_messages,
                      messages=messages,
                      model_name=self.chat_model.model_name,
@@ -166,11 +157,8 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
                     timeout = self.request_timeout(request_attempt.retry_state)
 
                     try:
-                        gen = await self.chat_model.async_client.create(
-                            messages=self.message_dicts,
-                            timeout=timeout,
-                            **params
-                        )
+                        gen = await self.chat_model.async_client.create(messages=self.message_dicts, timeout=timeout,
+                                                                        **params)
                     except openai.BadRequestError as e:
                         if e.response.json()["error"]["code"] == CONTEXT_LENGTH_EXCEEDED_ERROR_CODE:
                             raise ModelContextSizeExceededError.from_openai_error(
@@ -201,7 +189,19 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
                         except asyncio.TimeoutError as e:
                             raise StreamingNextTokenTimeoutError() from e
 
-                        # Обработка ответа
+                        # this code is for original openai lib, which constructs pydantic objects for each response
+                        ## choices = stream_resp.choices
+                        ## if len(choices) == 0:
+                        ##     finish_reason = None
+                        ##     role = role
+                        ##     token = ""
+                        ## else:
+                        ##     choice = choices[0]
+                        ##     finish_reason = choice.finish_reason
+                        ##     role = choice.delta.role or role
+                        ##     token = choice.delta.content or ""
+
+                        # this code is for patched openai lib (github.com/karfly/openai-python), which returns raw jsons
                         choices = stream_resp.get("choices", [])
                         if len(choices) == 0:
                             finish_reason = None
@@ -216,10 +216,6 @@ class StreamingOpenAIChatModel(StreamingLLMBase):
                             else:
                                 role = choice["delta"].get("role") or role
                                 token = choice["delta"].get("content", "")
-
-                        # Проверка и преобразование токена в строку
-                        if not isinstance(token, str):
-                            token = str(token) if token is not None else ""
 
                         _f = partial(count_tokens_from_output_text,
                                      text=token,
