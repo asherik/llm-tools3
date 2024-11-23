@@ -33,7 +33,7 @@ class TokenExpense:
 
     def price_per_1e6_input_tokens(self) -> int:
         return {
-            "gpt-3.5-turbo": 1,
+            "gpt-3.5-turbo": 2,
             "gpt-4": 30,
             "gpt-4-turbo": 10,
             "gpt-4o": 5,
@@ -42,7 +42,7 @@ class TokenExpense:
 
     def price_per_1e6_output_tokens(self) -> int:
         return {
-            "gpt-3.5-turbo": 1,
+            "gpt-3.5-turbo": 2,
             "gpt-4": 60,
             "gpt-4-turbo": 30,
             "gpt-4o": 15,
