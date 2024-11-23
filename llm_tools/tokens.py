@@ -34,8 +34,8 @@ class TokenExpense:
     def price_per_1e6_input_tokens(self) -> int:
         return {
             "gpt-3.5-turbo": 2,
-            "gpt-4": 30,
-            "gpt-4-turbo": 10,
+            "gpt-4": 15,
+            "gpt-4-turbo": 5,
             "gpt-4o": 5,
             "gpt-4o-mini": 1,  # TODO не корректно, надо переводить на double (0.3)
         }[self.model_name]
@@ -43,10 +43,10 @@ class TokenExpense:
     def price_per_1e6_output_tokens(self) -> int:
         return {
             "gpt-3.5-turbo": 2,
-            "gpt-4": 60,
-            "gpt-4-turbo": 30,
+            "gpt-4": 30,
+            "gpt-4-turbo": 15,
             "gpt-4o": 15,
-            "gpt-4o-mini": 2,  # TODO не корректно, надо переводить на double (1.2)
+            "gpt-4o-mini": 1,  # TODO не корректно, надо переводить на double (1.2)
         }[self.model_name]
 
     def get_price_multiplied_by_1e6(self) -> int:
