@@ -1,11 +1,7 @@
 iso639-lang
-tenacity~=9.0.0
+tenacity
 langchain==0.3.7
 langchain-community==0.3.7
 langchain-openai==0.2.9
-funcy~=2.0
+funcy
 git+https://github.com/asherik/openai-python.git@7e504ea
-setuptools~=68.2.0
-tiktoken~=0.8.0
-openai~=1.54.5
-aiohttp~=3.11.6
